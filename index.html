@@ -1,19 +1,118 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stick Brawl — Beta (Setup)</title>
-  <style>
-    body { font-family: system-ui, sans-serif; background:#0f1117; color:#e6e9ef;
-           display:grid; place-items:center; height:100vh; margin:0; }
-    .card { background:#121522; border:1px solid #1f2330; padding:24px; border-radius:12px; }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>Stick Brawl — Beta</title>
+  <link rel="stylesheet" href="style.css"/>
+  <meta name="theme-color" content="#0f1117"/>
 </head>
-<body>
-  <div class="card">
-    <h1>Stick Brawl — Beta</h1>
-    <p>✅ GitHub Pages is working. Next step: upload the actual game.</p>
+<body data-auth="S2hhb3NBcktuaWdodHwgS2FycmVlIEouIEhvd2VsbHwgMDYvMDkvMjAyNQ==">
+  <!-- Splash -->
+  <div id="splash">
+    <div class="logo">
+      <div class="ring"></div>
+      <div class="brand">
+        <span class="small">Presented by</span>
+        <span class="big">KhaosArKnight</span>
+      </div>
+    </div>
   </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="bar p1">
+      <span id="p1name">P1</span>
+      <div class="hp"><div id="hp1"></div></div>
+      <div class="meter"><div id="m1"></div></div>
+    </div>
+    <div class="rounds"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+    <div class="bar p2">
+      <div class="meter"><div id="m2"></div></div>
+      <div class="hp"><div id="hp2"></div></div>
+      <span id="p2name">P2</span>
+    </div>
+    <div class="hudBtns">
+      <button id="helpBtn" class="hudHelp">?</button>
+      <button id="pauseBtn" class="pause">⏸</button>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu">
+    <h1>Stick Brawl — Beta</h1>
+    <p class="sub">Mobile + Desktop. Choose archetypes, colors, customize, and fight.</p>
+
+    <div class="section">
+      <h3>Mode</h3>
+      <div class="row">
+        <button id="btnCpu">Arcade</button>
+        <button id="btnLocal">Versus (Local)</button>
+        <button id="btnTrain">Training</button>
+        <button id="startTutorial">Play Tutorial</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Players</h3>
+      <div class="selects">
+        <div class="col">
+          <label>P1 Model</label>
+          <select id="model1">
+            <option value="attacker">Attacker</option>
+            <option value="defender">Defender</option>
+            <option value="speed">Speed</option>
+            <option value="health">Health</option>
+            <option value="stealth">Stealth</option>
+          </select>
+          <label class="mt4">P1 Color</label>
+          <input id="color1" type="color" value="#e6e9ef"/>
+        </div>
+        <div class="col">
+          <label>P2 Model</label>
+          <select id="model2">
+            <option value="attacker">Attacker</option>
+            <option value="defender">Defender</option>
+            <option value="speed">Speed</option>
+            <option value="health">Health</option>
+            <option value="stealth">Stealth</option>
+            <option value="random" selected>Random</option>
+          </select>
+          <label class="mt4">P2 Color</label>
+          <input id="color2" type="color" value="#e6e9ef"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Stage</h3>
+      <select id="stage">
+        <option value="dojo" selected>Moonlit Dojo</option>
+        <option value="city">Neon Rooftop</option>
+        <option value="desert">Desert Rift</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <label class="chk"><input id="leftHanded" type="checkbox"/> Left-handed controls</label>
+      <label class="chk"><input id="lowGraphics" type="checkbox"/> Low graphics mode</label>
+      <button id="resetDataBtn" class="mini">Reset Data</button>
+    </div>
+
+    <div class="section">
+      <h3>Stats</h3>
+      <div id="statsRow" class="statsRow">
+        Matches: <b id="statMatches">0</b> · Wins: <b id="statWins">0</b> · Losses: <b id="statLosses">0</b>
+      </div>
+    </div>
+  </div>
+
+  <div id="rotateHint" class="rotate hidden">Rotate to landscape</div>
+  <canvas id="game" width="960" height="540"></canvas>
+
+  <!-- Tamper watermark (only shown if stripped) -->
+  <div id="wm"><div class="inner"><div class="tag">© KhaosArKnight · Karree J. Howell · 06/09/2025</div></div></div>
+
+  <script src="game.js"></script>
 </body>
 </html>
