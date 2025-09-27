@@ -89,7 +89,17 @@ document.addEventListener("DOMContentLoaded", ()=>{
 });
 
 // Fighter + combat
-const P = (x,facing,color)=>({ x, y:BASE_H-100, vx:0, vy:0, facing, hp:100, maxhp:100, meter:0, h:90, color });
+const P = (x,facing,color)=>({ 
+  x, 
+  y: BASE_H - 100,   // fighter spawns 100px up from bottom
+  vx: 0, vy: 0, 
+  facing, 
+  hp: 100, maxhp: 100, 
+  meter: 0, 
+  h: 90,             // stick height
+  color 
+});
+
 
 let p1, p2;
 
@@ -163,41 +173,6 @@ function hit(target, dmg){
   }
 }
 
-// Render
-function drawStick(f){
-  ctx.save();
-  ctx.lineWidth = 6;         // thicker strokes
-  ctx.strokeStyle = f.color; // fighter color
-  ctx.fillStyle = f.color;
-
-  // Head (filled circle)
-  ctx.beginPath();
-  ctx.arc(f.x, f.y - f.h - 12, 12, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Spine
-  ctx.beginPath();
-  ctx.moveTo(f.x, f.y - f.h);
-  ctx.lineTo(f.x, f.y - 32);
-
-  // Arms
-  ctx.moveTo(f.x, f.y - f.h + 20);
-  ctx.lineTo(f.x + f.facing * 18, f.y - f.h + 10);
-
-  ctx.moveTo(f.x, f.y - f.h + 32);
-  ctx.lineTo(f.x - f.facing * 14, f.y - f.h + 22);
-
-  // Legs
-  ctx.moveTo(f.x, f.y - 32);
-  ctx.lineTo(f.x - 12, f.y);
-
-  ctx.moveTo(f.x, f.y - 32);
-  ctx.lineTo(f.x + 12, f.y);
-
-  ctx.stroke();
-  ctx.restore();
-}
-
 function drawStick(f){
   ctx.save();
   ctx.lineWidth = 6;
@@ -238,22 +213,37 @@ function lowHpBlink(){
 }
 
 // Main loop
+// Main loop (with debug paint + markers)
 function loop(){
+  // If a match hasn't started or is paused, just keep ticking
   if (!ST.started) { requestAnimationFrame(loop); return; }
-  if (ST.mode==="paused"){ requestAnimationFrame(loop); return; }
+  if (ST.mode === "paused") { requestAnimationFrame(loop); return; }
 
+  // --- DEBUG: paint a visible background each frame so we know the canvas is drawing
+  ctx.fillStyle = "#102a43";           // dark teal
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
+
+  // --- Stage (gradient + ground + ground line)
+  drawStage();
+
+  // Inputs
   const in1 = inputsP1();
-  const in2 = (ST.kind==="cpu") ? inputsCPU() : inputsP1(); // mirror for local/train
+  const in2 = (ST.kind === "cpu") ? inputsCPU() : inputsP1(); // mirror for local/train
 
+  // Step fighters
   stepFighter(p1, in1);
   stepFighter(p2, in2);
 
-  drawStage();
+  // --- DEBUG: draw bright squares at each fighter's feet
+  ctx.fillStyle = "#ff3b3b"; ctx.fillRect(p1.x - 3, p1.y - 3, 6, 6); // P1 marker (red)
+  ctx.fillStyle = "#4dd2ff"; ctx.fillRect(p2.x - 3, p2.y - 3, 6, 6); // P2 marker (cyan)
+
+  // Draw fighters (thick strokes + filled heads per drawStick)
   drawStick(p1);
   drawStick(p2);
+
+  // Low-HP blink
   lowHpBlink();
 
   requestAnimationFrame(loop);
 }
-updateBars();
-loop();
