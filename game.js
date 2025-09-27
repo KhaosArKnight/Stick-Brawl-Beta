@@ -1,3 +1,16 @@
+function ensureFighters(){
+  if (!p1 || !p2) {
+    // emergency spawn with loud colors
+    p1 = P(BASE_W * 0.35, +1, "#ff5252");
+    p2 = P(BASE_W * 0.65, -1, "#4dd2ff");
+    ST.kind = "cpu";
+    ST.mode = "fight";
+    ST.started = true;
+    hideMenu();
+    updateBars();
+  }
+}
+
 // === Splash + watermark guard (credit stays intact) ===
 (function(){
   const AUTHOR = "KhaosArKnight (Karree J. Howell, 06/09/2025)";
@@ -203,37 +216,42 @@ function lowHpBlink(){
 // --- DEBUG toggle ---
 const DEBUG = true; // set to false later
 
-// Main loop (with debug paint + markers so you can verify)
+// Main loop (ensureFighters + debug paint/markers)
 function loop(){
+  // bail early if not started / paused
   if (!ST.started) { requestAnimationFrame(loop); return; }
   if (ST.mode === "paused") { requestAnimationFrame(loop); return; }
 
+  // make sure fighters exist (emergency spawn if missing)
+  ensureFighters();
+
+  // DEBUG: obvious background so we know canvas is drawing
   if (DEBUG){
     ctx.fillStyle = "#102a43";
-    ctx.fillRect(0,0,BASE_W,BASE_H);
+    ctx.fillRect(0, 0, BASE_W, BASE_H);
   }
 
+  // stage (gradient + ground + ground line)
   drawStage();
 
+  // inputs
   const in1 = inputsP1();
-  const in2 = (ST.kind === "cpu") ? inputsCPU() : inputsP1();
+  const in2 = (ST.kind === "cpu") ? inputsCPU() : inputsP1(); // mirror for local/train
 
+  // simulate
   stepFighter(p1, in1);
   stepFighter(p2, in2);
 
+  // DEBUG: foot markers so we can locate fighters
   if (DEBUG){
-    ctx.fillStyle = "#ff3b3b"; ctx.fillRect(p1.x-3, p1.y-3, 6, 6);
-    ctx.fillStyle = "#4dd2ff"; ctx.fillRect(p2.x-3, p2.y-3, 6, 6);
+    ctx.fillStyle = "#ff3b3b"; ctx.fillRect(p1.x - 3, p1.y - 3, 6, 6); // P1
+    ctx.fillStyle = "#4dd2ff"; ctx.fillRect(p2.x - 3, p2.y - 3, 6, 6); // P2
   }
 
+  // draw
   drawStick(p1);
   drawStick(p2);
 
   lowHpBlink();
   requestAnimationFrame(loop);
 }
-updateBars();
-loop();
-
-// Auto-start a CPU match so you instantly see fighters (remove if you want)
-window.addEventListener("load", ()=>{ if(!ST.started) startMatch("cpu"); });
