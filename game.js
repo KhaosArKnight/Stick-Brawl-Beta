@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 });
 
 // Fighter + combat
-const P = (x,facing,color)=>({ x, y:BASE_H-80, vx:0, vy:0, facing, hp:100, maxhp:100, meter:0, h:70, color });
+const P = (x,facing,color)=>({ x, y:BASE_H-100, vx:0, vy:0, facing, hp:100, maxhp:100, meter:0, h:90, color });
 
 let p1, p2;
 
@@ -164,30 +164,72 @@ function hit(target, dmg){
 }
 
 // Render
-function drawStage(){
-  const g = ctx.createLinearGradient(0,0,0,BASE_H);
-  g.addColorStop(0,'#0b0f1c'); g.addColorStop(1,'#16223a');
-  ctx.fillStyle=g; ctx.fillRect(0,0,BASE_W,BASE_H);
-  // ground
-  ctx.fillStyle='#0a0f17'; ctx.fillRect(0, BASE_H-80+1, BASE_W, 80);
+function drawStick(f){
+  ctx.save();
+  ctx.lineWidth = 6;         // thicker strokes
+  ctx.strokeStyle = f.color; // fighter color
+  ctx.fillStyle = f.color;
+
+  // Head (filled circle)
+  ctx.beginPath();
+  ctx.arc(f.x, f.y - f.h - 12, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Spine
+  ctx.beginPath();
+  ctx.moveTo(f.x, f.y - f.h);
+  ctx.lineTo(f.x, f.y - 32);
+
+  // Arms
+  ctx.moveTo(f.x, f.y - f.h + 20);
+  ctx.lineTo(f.x + f.facing * 18, f.y - f.h + 10);
+
+  ctx.moveTo(f.x, f.y - f.h + 32);
+  ctx.lineTo(f.x - f.facing * 14, f.y - f.h + 22);
+
+  // Legs
+  ctx.moveTo(f.x, f.y - 32);
+  ctx.lineTo(f.x - 12, f.y);
+
+  ctx.moveTo(f.x, f.y - 32);
+  ctx.lineTo(f.x + 12, f.y);
+
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawStick(f){
   ctx.save();
-  ctx.strokeStyle=f.color; ctx.lineWidth=4;
-  // head
-  ctx.beginPath(); ctx.arc(f.x, f.y - f.h - 10, 10, 0, Math.PI*2); ctx.stroke();
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = f.color;
+  ctx.fillStyle = f.color;
+
+  // head (filled)
+  ctx.beginPath();
+  ctx.arc(f.x, f.y - f.h - 12, 12, 0, Math.PI*2);
+  ctx.fill();
+
   // spine
-  ctx.beginPath(); ctx.moveTo(f.x, f.y - f.h); ctx.lineTo(f.x, f.y - 30);
+  ctx.beginPath();
+  ctx.moveTo(f.x, f.y - f.h);
+  ctx.lineTo(f.x, f.y - 32);
+
   // arms
-  ctx.moveTo(f.x, f.y - f.h + 16); ctx.lineTo(f.x + f.facing*14, f.y - f.h + 8);
-  ctx.moveTo(f.x, f.y - f.h + 26); ctx.lineTo(f.x - f.facing*10, f.y - f.h + 18);
+  ctx.moveTo(f.x, f.y - f.h + 20);
+  ctx.lineTo(f.x + f.facing*18, f.y - f.h + 10);
+  ctx.moveTo(f.x, f.y - f.h + 32);
+  ctx.lineTo(f.x - f.facing*14, f.y - f.h + 22);
+
   // legs
-  ctx.moveTo(f.x, f.y - 30); ctx.lineTo(f.x - 10, f.y);
-  ctx.moveTo(f.x, f.y - 30); ctx.lineTo(f.x + 10, f.y);
+  ctx.moveTo(f.x, f.y - 32);
+  ctx.lineTo(f.x - 12, f.y);
+  ctx.moveTo(f.x, f.y - 32);
+  ctx.lineTo(f.x + 12, f.y);
+
   ctx.stroke();
   ctx.restore();
 }
+
 
 function lowHpBlink(){
   const p1low = (p1.hp/p1.maxhp)<=0.2, p2low = (p2.hp/p2.maxhp)<=0.2;
