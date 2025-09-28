@@ -1,6 +1,7 @@
+// === Emergency spawner (guarantees you see fighters) ===
 function ensureFighters(){
   if (!p1 || !p2) {
-    // emergency spawn with loud colors
+    // loud colors so they're obvious
     p1 = P(BASE_W * 0.35, +1, "#ff5252");
     p2 = P(BASE_W * 0.65, -1, "#4dd2ff");
     ST.kind = "cpu";
@@ -214,7 +215,7 @@ function lowHpBlink(){
 }
 
 // --- DEBUG toggle ---
-const DEBUG = true; // set to false later
+const DEBUG = true; // flip to false after you verify visuals
 
 // Main loop (ensureFighters + debug paint/markers)
 function loop(){
@@ -225,7 +226,7 @@ function loop(){
   // make sure fighters exist (emergency spawn if missing)
   ensureFighters();
 
-  // DEBUG: obvious background so we know canvas is drawing
+  // DEBUG: obvious background
   if (DEBUG){
     ctx.fillStyle = "#102a43";
     ctx.fillRect(0, 0, BASE_W, BASE_H);
@@ -255,3 +256,8 @@ function loop(){
   lowHpBlink();
   requestAnimationFrame(loop);
 }
+
+// kick everything off
+updateBars();
+loop();
+window.addEventListener("load", () => { if (!ST.started) startMatch("cpu"); });
